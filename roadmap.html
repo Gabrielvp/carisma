@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  .container { max-width: 1400px; margin: 0 auto; }
+  .control-panel { background: #FEF3C7; padding: 20px; margin-bottom: 20px; border-radius: 8px; border: 2px solid #F59E0B; }
+  .control-panel h2 { margin-top: 0; color: #92400E; }
+  .date-input { padding: 10px; font-size: 16px; border: 2px solid #F59E0B; border-radius: 4px; }
+  .btn-update { background: #10B981; color: white; padding: 12px 24px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-left: 10px; }
+  .btn-update:hover { background: #059669; }
+  .instructions { background: #DBEAFE; padding: 15px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #3B82F6; }
+  table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+  th { background: #1F2937; color: white; padding: 12px; text-align: left; }
+  td { padding: 10px; border: 1px solid #ddd; }
+  .discovery { background: #F3E8FF; }
+  .operacional { background: #DBEAFE; }
+  .desenvolvimento { background: #E0E7FF; }
+  .qa { background: #FEF3C7; }
+  .golive { background: #D1FAE5; }
+  .sprint-header { background: #4F46E5; color: white; padding: 15px; margin: 30px 0 10px 0; border-radius: 8px; }
+  .sprint-summary { background: #F3F4F6; padding: 15px; margin: 10px 0; border-radius: 8px; }
+  .tab-buttons { margin: 20px 0; }
+  .tab-btn { padding: 10px 20px; margin-right: 10px; border: none; background: #6366F1; color: white; border-radius: 4px; cursor: pointer; }
+  .tab-btn:hover { background: #4F46E5; }
+  .tab-btn.active { background: #1F2937; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  @media print {
+    .control-panel, .tab-buttons, .btn-update { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <!--<h1>📊 Roadmap do Projeto - Gestão Inteligente</h1>-->
+  <h1>📊 Roadmap do Projeto</h1>
+  
+  <div class="control-panel">
+    <h2>⚙️ Controle de Datas</h2>
+    <label><strong>Data de Início do Projeto:</strong></label><br>
+    <input type="date" id="startDate" class="date-input" value="2025-02-03">
+    <button class="btn-update" onclick="updateAllDates()">🔄 Atualizar Cronograma</button>
+    
+    <div style="margin-top: 15px; padding: 10px; background: white; border-radius: 4px;">
+      <div id="sprintDates"></div>
+    </div>
+  </div>
+
+  <!--<div class="instructions">
+    <h3 style="margin-top: 0;">📋 Instruções de Uso</h3>
+    <ol>
+      <li><strong>Altere a data de início</strong> no campo acima</li>
+      <li><strong>Clique em "Atualizar Cronograma"</strong> para recalcular todas as datas</li>
+      <li><strong>Navegue pelas abas</strong> para ver cada sprint detalhadamente</li>
+      <li><strong>Imprima ou salve como PDF</strong> usando Ctrl+P</li>
+    </ol>
+  </div>-->
+
+  <div class="tab-buttons">
+    <button class="tab-btn active" onclick="showTab('visao-geral')">📊 Visão Geral</button>
+    <button class="tab-btn" onclick="showTab('sprint1')">Sprint 1</button>
+    <button class="tab-btn" onclick="showTab('sprint2')">Sprint 2</button>
+    <button class="tab-btn" onclick="showTab('sprint3')">Sprint 3</button>
+    <button class="tab-btn" onclick="showTab('sprint4')">Sprint 4</button>
+  </div>
+
+  <div id="visao-geral" class="tab-content active"></div>
+  <div id="sprint1" class="tab-content"></div>
+  <div id="sprint2" class="tab-content"></div>
+  <div id="sprint3" class="tab-content"></div>
+  <div id="sprint4" class="tab-content"></div>
+</div>
+
+<script>
+const tasks = [{"macro":"Discovery","sprint":1,"entrega":"Reunião de alinhamento com o cliente","responsavel":"PO","duracao":1,"pontos":2,"status":"To Do","offset":0},{"macro":"Discovery","sprint":1,"entrega":"Documentação de arquitetura e premissas","responsavel":"PO","duracao":3,"pontos":5,"status":"To Do","offset":1},{"macro":"Desenvolvimento","sprint":1,"entrega":"Setup inicial da plataforma e repositórios","responsavel":"Dev","duracao":1,"pontos":3,"status":"To Do","offset":0},{"macro":"Operacional","sprint":1,"entrega":"Migração de catálogo","responsavel":"Cliente / ERP","duracao":3,"pontos":"","status":"To Do","offset":2},{"macro":"Operacional","sprint":1,"entrega":"Configuração de meios de pagamento","responsavel":"Cliente","duracao":3,"pontos":"","status":"To Do","offset":2},{"macro":"Desenvolvimento","sprint":1,"entrega":"Header e Footer","responsavel":"Dev","duracao":1,"pontos":2,"status":"To Do","offset":1},{"macro":"Operacional","sprint":2,"entrega":"Migração da base de clientes","responsavel":"Dev","duracao":1,"pontos":2,"status":"To Do","offset":0},{"macro":"Desenvolvimento","sprint":2,"entrega":"Home – Frontend","responsavel":"Dev","duracao":2,"pontos":5,"status":"To Do","offset":0},{"macro":"Desenvolvimento","sprint":2,"entrega":"Home – Backend","responsavel":"Dev","duracao":2,"pontos":5,"status":"To Do","offset":0},{"macro":"Desenvolvimento","sprint":2,"entrega":"PLP – Frontend","responsavel":"Dev","duracao":5,"pontos":8,"status":"To Do","offset":3},{"macro":"Desenvolvimento","sprint":2,"entrega":"PLP – Backend","responsavel":"Dev","duracao":5,"pontos":8,"status":"To Do","offset":3},{"macro":"Desenvolvimento","sprint":3,"entrega":"PDP – Frontend","responsavel":"Dev","duracao":3,"pontos":5,"status":"To Do","offset":0},{"macro":"Desenvolvimento","sprint":3,"entrega":"PDP – Backend","responsavel":"Dev","duracao":3,"pontos":5,"status":"To Do","offset":0},{"macro":"Desenvolvimento","sprint":3,"entrega":"Páginas institucionais","responsavel":"Dev","duracao":2,"pontos":3,"status":"To Do","offset":4},{"macro":"Desenvolvimento","sprint":4,"entrega":"Checkout – Frontend","responsavel":"Dev","duracao":3,"pontos":5,"status":"To Do","offset":0},{"macro":"Desenvolvimento","sprint":4,"entrega":"Checkout – Backend","responsavel":"Dev","duracao":5,"pontos":8,"status":"To Do","offset":0},{"macro":"QA","sprint":4,"entrega":"Testes end-to-end","responsavel":"PO / Dev","duracao":3,"pontos":"","status":"QA","offset":4},{"macro":"QA","sprint":4,"entrega":"Correções finais","responsavel":"Dev","duracao":2,"pontos":"","status":"QA","offset":7},{"macro":"Go-live","sprint":4,"entrega":"Treinamento preparatório para Go-live","responsavel":"PO","duracao":1,"pontos":"","status":"Ready for Go-live","offset":6},{"macro":"Go-live","sprint":4,"entrega":"Configuração de DNS","responsavel":"Cliente / Infra","duracao":1,"pontos":"","status":"Ready for Go-live","offset":8},{"macro":"Go-live","sprint":4,"entrega":"Go-live controlado","responsavel":"PO / Dev","duracao":1,"pontos":"","status":"Ready for Go-live","offset":9}];
+
+function addBusinessDays(date, days) {
+  let current = new Date(date);
+  let daysAdded = 0;
+  
+  while (daysAdded < days) {
+    current.setDate(current.getDate() + 1);
+    const dayOfWeek = current.getDay();
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+      daysAdded++;
+    }
+  }
+  
+  return current;
+}
+
+function formatDate(date) {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return day + '/' + month + '/' + year;
+}
+
+function calculateSprints(startDate) {
+  const sprints = [];
+  let currentStart = new Date(startDate);
+  
+  for (let i = 1; i <= 4; i++) {
+    const sprintEnd = addBusinessDays(currentStart, 9);
+    sprints.push({
+      number: i,
+      start: new Date(currentStart),
+      end: new Date(sprintEnd)
+    });
+    currentStart = addBusinessDays(sprintEnd, 1);
+  }
+  
+  return sprints;
+}
+
+function getStyleClass(macro) {
+  const map = {
+    'Discovery': 'discovery',
+    'Operacional': 'operacional',
+    'Desenvolvimento': 'desenvolvimento',
+    'QA': 'qa',
+    'Go-live': 'golive'
+  };
+  return map[macro] || '';
+}
+
+function updateAllDates() {
+  const startDateInput = document.getElementById('startDate').value;
+  const sprints = calculateSprints(startDateInput);
+  
+  // Atualizar exibição das sprints
+  let sprintHtml = '<strong>Datas das Sprints:</strong><br>';
+  sprints.forEach(sprint => {
+    sprintHtml += `Sprint ${sprint.number}: ${formatDate(sprint.start)} até ${formatDate(sprint.end)}<br>`;
+  });
+  document.getElementById('sprintDates').innerHTML = sprintHtml;
+  
+  // Calcular tarefas com datas
+  const tasksWithDates = tasks.map(task => {
+    const sprint = sprints[task.sprint - 1];
+    const taskStart = addBusinessDays(sprint.start, task.offset);
+    const taskEnd = addBusinessDays(taskStart, task.duracao - 1);
+    
+    return {
+      ...task,
+      dataInicio: formatDate(taskStart),
+      dataFim: formatDate(taskEnd),
+      sprintStart: formatDate(sprint.start),
+      sprintEnd: formatDate(sprint.end)
+    };
+  });
+  
+  // Renderizar visão geral
+  renderVisaoGeral(tasksWithDates);
+  
+  // Renderizar cada sprint
+  for (let i = 1; i <= 4; i++) {
+    renderSprint(i, tasksWithDates, sprints[i-1]);
+  }
+}
+
+function renderVisaoGeral(tasksWithDates) {
+  let html = '<h2>📊 Visão Geral - Todas as Tarefas</h2>';
+  html += '<table><thead><tr>';
+  html += '<th>Macro</th><th>Sprint</th><th>Entrega</th><th>Responsável</th>';
+  html += '<th>Duração</th><th>Data Início</th><th>Data Fim</th><th>Pontos</th><th>Status</th>';
+  html += '</tr></thead><tbody>';
+  
+  tasksWithDates.forEach(task => {
+    const style = getStyleClass(task.macro);
+    html += `<tr class="${style}">
+      <td><strong>${task.macro}</strong></td>
+      <td>Sprint ${task.sprint}</td>
+      <td>${task.entrega}</td>
+      <td>${task.responsavel}</td>
+      <td>${task.duracao}d</td>
+      <td>${task.dataInicio}</td>
+      <td>${task.dataFim}</td>
+      <td>${task.pontos}</td>
+      <td>${task.status}</td>
+    </tr>`;
+  });
+  
+  html += '</tbody></table>';
+  document.getElementById('visao-geral').innerHTML = html;
+}
+
+function renderSprint(sprintNum, tasksWithDates, sprint) {
+  const sprintTasks = tasksWithDates.filter(t => t.sprint === sprintNum);
+  
+  let html = `<div class="sprint-header">
+    <h2>Sprint ${sprintNum} - ${formatDate(sprint.start)} até ${formatDate(sprint.end)}</h2>
+  </div>`;
+  
+  html += '<table><thead><tr>';
+  html += '<th>Macro</th><th>Entrega</th><th>Responsável</th><th>Duração</th>';
+  html += '<th>Data Início</th><th>Data Fim</th><th>Pontos</th><th>Status</th>';
+  html += '</tr></thead><tbody>';
+  
+  sprintTasks.forEach(task => {
+    const style = getStyleClass(task.macro);
+    html += `<tr class="${style}">
+      <td><strong>${task.macro}</strong></td>
+      <td>${task.entrega}</td>
+      <td>${task.responsavel}</td>
+      <td>${task.duracao}d</td>
+      <td>${task.dataInicio}</td>
+      <td>${task.dataFim}</td>
+      <td>${task.pontos}</td>
+      <td>${task.status}</td>
+    </tr>`;
+  });
+  
+  html += '</tbody></table>';
+  
+  // Resumo
+  const totalPontos = sprintTasks.reduce((sum, t) => sum + (parseInt(t.pontos) || 0), 0);
+  html += `<div class="sprint-summary">
+    <h3>📊 Resumo da Sprint</h3>
+    <p><strong>Total de Tarefas:</strong> ${sprintTasks.length}</p>
+    <p><strong>Total de Pontos:</strong> ${totalPontos}</p>
+  </div>`;
+  
+  document.getElementById(`sprint${sprintNum}`).innerHTML = html;
+}
+
+function showTab(tabName) {
+  // Ocultar todos os conteúdos
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  // Remover active de todos os botões
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Mostrar o conteúdo selecionado
+  document.getElementById(tabName).classList.add('active');
+  
+  // Ativar o botão correspondente
+  event.target.classList.add('active');
+}
+
+// Inicializar ao carregar a página
+updateAllDates();
+</script>
+</body>
+</html>
